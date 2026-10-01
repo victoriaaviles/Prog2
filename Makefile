@@ -10,21 +10,21 @@ TARGET = lbp
 
 # Regra TUDO: compila e instala
 tudo: $(TARGET)
-  @mkdir -p ../bin
-  cp $(TARGET) ../bin/
+	@mkdir -p ../bin
+	cp $(TARGET) ../bin/
 
 # Regra de linkedição do executável principal
 $(TARGET): $(OBJ)
-  $(CC) $(CFLAGS) $(OBJ) -o $(TARGET)
+	$(CC) $(CFLAGS) $(OBJ) -o $(TARGET)
 
 # Regra genérica para gerar os arquivos .o a partir dos .c
 %.o: %.c
-  $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Regra LIMPA: limpa os arquivos temporários (.o)
 limpa:
-  rm -f *.o
+	rm -f *.o
 
 # Regra FAXINA: limpa todos os temporários e executáveis gerados
 faxina: limpa
-  rm -f $(TARGET) ../bin/$(TARGET)
+	rm -f $(TARGET) ../bin/$(TARGET)
