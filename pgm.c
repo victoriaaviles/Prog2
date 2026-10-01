@@ -149,7 +149,7 @@ int pgm_ler(const char *caminho_arquivo, PGMImage *img)
     // binário: fecha o arquivo em modo texto e reabre em binário se necessário, ou lê diretamente os bytes do buffer se a posição estiver alinhada.
     fclose(f);
     // abre novamente em modo binário para ler o bloco de pixels corretamente
-    FILE *fb = fopen(caminho_arquivo, "rb");
+    // FILE *fb = fopen(caminho_arquivo, "rb");
   }
 
   fclose(f);

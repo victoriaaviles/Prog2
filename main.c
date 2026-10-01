@@ -19,5 +19,10 @@ int main(int argc, char **argv)
   // processa o diretório de imagens e executa o fluxo principal 
   // (a lógica de varredura chamará a leitura pgm e o cálculo lbp para cada arquivo)
 
+  if (!processar_diretorio(args.diretorio, &args)) 
+  {
+    return 1;
+  }
+  
   return 0;
 }
