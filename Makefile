@@ -21,10 +21,10 @@ $(TARGET): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regra LIMPA: limpa os arquivos temporários (.o)
-limpa:
+# Regra clean: limpa os arquivos temporários (.o)
+clean:
 	rm -f *.o
 
-# Regra FAXINA: limpa todos os temporários e executáveis gerados
-faxina: limpa
+# Regra clean all: limpa todos os temporários e executáveis gerados
+clean all: limpa
 	rm -f $(TARGET) ../bin/$(TARGET)

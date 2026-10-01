@@ -7,6 +7,7 @@
 
 int processar_diretorio(const char *caminho_dir, Argumentos *args) 
 {
+  (void)args;
   DIR *dir = opendir(caminho_dir);     //abre o diretorio
 
   if (dir == NULL) 
