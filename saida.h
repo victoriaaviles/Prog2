@@ -1,5 +1,4 @@
 #ifndef SAIDA_H
-#ifndef SAIDA_H
 #define SAIDA_H
 
 #include "pgm.h"
