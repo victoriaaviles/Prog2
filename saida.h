@@ -12,4 +12,3 @@ int gravar_caracteristicas(const char *caminho_saida, const char *nome_imagem, c
 int salvar_imagem_lbp(const char *dir_imagens, const char *nome_original, const PGMImage *img_lbp);
 
 #endif
-#endif
