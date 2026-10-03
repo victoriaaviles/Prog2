@@ -31,9 +31,9 @@ Para compilar o projeto de forma limpa e correta, utilize o Makefile localizado 
 
 Para executar o programa após compilado, utilize por exemplo:
 
-./bin/lbp -d ./dataset -n 8 -o resultado_8.txt -i ./lbp_images_8
+`./bin/lbp -d ./dataset -n 8 -o resultado_8.txt -i ./lbp_images_8`
 
-./bin/lbp -d ./dataset -n 8 -o resultado_8.txt -i ./lbp_images_16
+`./bin/lbp -d ./dataset -n 8 -o resultado_8.txt -i ./lbp_images_16`
 
 *Nota importante sobre a visualização das imagens geradas:* Como as imagens LBP são guardadas no formato binário (P5), os editores de texto (como o VS Code) costumam bloquear a abertura direta exibindo um aviso de ficheiro binário. Para inspecionar e visualizar corretamente as imagens geradas, a forma mais prática é abri-las diretamente pelo terminal usando o visualizador nativo com o comando:
 
