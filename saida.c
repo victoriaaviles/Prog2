@@ -42,19 +42,15 @@ int salvar_imagem_lbp(const char *dir_imagens, const char *nome_original, const 
     return 0;
   }
 
-  // escreve o cabeçalho pgm (P2)
-  fprintf(f, "%s\n", img_lbp->tipo);
+  // escreve o cabeçalho pgm (P5)
+  fprintf(f, "P5\n");
   fprintf(f, "%d %d\n", img_lbp->largura, img_lbp->altura);
   fprintf(f, "%d\n", img_lbp->maxval);
 
-  // escreve os pixels da matriz lbp
+  // escreve os pixels linha por linha usando fwrite (binário puro)
   for (int i = 0; i < img_lbp->altura; i++) 
   {
-    for (int j = 0; j < img_lbp->largura; j++) 
-    {
-      fprintf(f, "%d ", img_lbp->pixels[i][j]);
-    }
-      fprintf(f, "\n");
+    fwrite(img_lbp->pixels[i], sizeof(unsigned char), img_lbp->largura, f);
   }
 
   fclose(f);

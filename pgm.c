@@ -3,29 +3,6 @@
 #include <string.h>
 #include "pgm.h"
 
-// função para pular linhas de comentário iniciadas por #
-static void pular_comentarios(FILE *f) 
-{
-  int c;
-  while ((c = fgetc(f)) != EOF) 
-  {
-    if (c == '#') 
-    {
-      while ((c = fgetc(f)) != EOF && c != '\n');    // ignora tudo até o final da linha
-    } 
-    else if (c == ' ' || c == '\t' || c == '\n' || c == '\r')   // ignora espaços em branco antes de novos dados ou comentários
-    {
-      continue;
-    } 
-    else 
-    {
-    // encontrou um caractere normal, devolve para o fluxo do arquivo
-      ungetc(c, f);
-      break;
-    }
-  }
-}
-
 void pgm_liberar(PGMImage *img) 
 {
   if (img->pixels != NULL) 
