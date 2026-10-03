@@ -84,14 +84,29 @@ int calcular_lbp_imagem(const PGMImage *img_entrada, int vizinhos, unsigned int 
   }
 
   // prepara a imagem lbp de saída (se solicitado via -i)
-  if (gerar_imagem) 
+  if (gerar_imagem)
   {
     img_lbp->largura = img_entrada->largura;
     img_lbp->altura = img_entrada->altura;
     img_lbp->maxval = 255; // Para visualização
     strcpy(img_lbp->tipo, "P2");
         
-    // alocação da matriz da imagem lbp de saída...
+    // alocação dinâmica obrigatoria da matriz da imagem lbp de saída
+    img_lbp->pixels = (unsigned char **)malloc(img_lbp->altura * sizeof(unsigned char *));
+    if (img_lbp->pixels == NULL) 
+    {
+      fprintf(stderr, "Erro de alocação de memória para img_lbp\n");
+      return 0;
+    }
+    for (int i = 0; i < img_lbp->altura; i++) 
+    {
+      img_lbp->pixels[i] = (unsigned char *)malloc(img_lbp->largura * sizeof(unsigned char));
+      if (img_lbp->pixels[i] == NULL) 
+      {
+        fprintf(stderr, "Erro de alocação de memória para as colunas de img_lbp\n");
+        return 0;
+      }
+    }
   }
 
   // percorre a imagem respeitando as margens das bordas
