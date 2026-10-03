@@ -41,115 +41,59 @@ void pgm_liberar(PGMImage *img)
 
 int pgm_ler(const char *caminho_arquivo, PGMImage *img) 
 {
-  FILE *f = fopen(caminho_arquivo, "r");
+  // abrimos com "rb" (read binary) para suportar ficheiros P5
+  FILE *f = fopen(caminho_arquivo, "rb");
   if (f == NULL) 
   {
-    fprintf(stderr, "Erro: Não foi possível abrir o arquivo %s\n", caminho_arquivo);
+    fprintf(stderr, "Erro ao abrir a imagem: %s\n", caminho_arquivo);
     return 0;
   }
 
-  // Lê o tipo do arquivo (P2 ou P5)
-  if (fscanf(f, "%2s", img->tipo) != 1) 
-  {
-    fprintf(stderr, "Erro: Arquivo PGM inválido (falha ao ler o tipo).\n");
-    fclose(f);
-    return 0;
-  }
+  // lê o cabeçalho
+  fscanf(f, "%s", img->tipo);
+  fscanf(f, "%d %d", &img->largura, &img->altura);
+    
+  int maxval;
+  fscanf(f, "%d", &maxval);
+  img->maxval = maxval;
 
-  // Valida se o formato corresponde ao padrão PGM suportado
-  if (strcmp(img->tipo, "P2") != 0 && strcmp(img->tipo, "P5") != 0) 
-  {
-    fprintf(stderr, "Erro: Formato PGM desconhecido (%s). Permitidos: P2 ou P5.\n", img->tipo);
-    fclose(f);
-    return 0;
-  }
-
-  // Lê a largura, altura e maxval ignorando os comentários pelo caminho
-  pular_comentarios(f);
-  if (fscanf(f, "%d", &img->largura) != 1) 
-  {
-    fprintf(stderr, "Erro: Falha ao ler a largura da imagem.\n");
-    fclose(f);
-    return 0;
-  }
-
-  pular_comentarios(f);
-  if (fscanf(f, "%d", &img->altura) != 1) 
-  {
-    fprintf(stderr, "Erro: Falha ao ler a altura da imagem.\n");
-    fclose(f);
-    return 0;
-  }
-
-  pular_comentarios(f);
-  if (fscanf(f, "%d", &img->maxval) != 1) 
-  {
-    fprintf(stderr, "Erro: Falha ao ler o MAXVAL da imagem.\n");
-    fclose(f);
-    return 0;
-  }
-
-  // validações do maxval
-  if (img->maxval <= 0 || img->maxval >= 65536) 
-  {
-    fprintf(stderr, "Erro: MAXVAL inválido (%d). Deve estar entre 1 e 65535.\n", img->maxval);
-    fclose(f);
-    return 0;
-  }
-
-  // consome o caractere de espaçamento após o maxval antes de ler os pixels
+  // precisamos consumir esse byte antes de ler os dados binários do P5.
   fgetc(f);
 
-  // Alocação dinâmica da matriz de pixels [altura][largura]
+  // aloca a memória para a matriz de píxeis da imagem
   img->pixels = (unsigned char **)malloc(img->altura * sizeof(unsigned char *));
-  if (img->pixels == NULL) 
-  {
-    fprintf(stderr, "Erro: Falha de alocação de memória para as linhas da imagem.\n");
-    fclose(f);
-    return 0;
-  }
-
   for (int i = 0; i < img->altura; i++) 
   {
     img->pixels[i] = (unsigned char *)malloc(img->largura * sizeof(unsigned char));
-    if (img->pixels[i] == NULL) 
-    {
-      fprintf(stderr, "Erro: Falha de alocação de memória para as colunas da imagem.\n");
-
-      // libera o que já foi alocado antes de sair
-      for (int j = 0; j < i; j++) free(img->pixels[j]);
-      free(img->pixels);
-      fclose(f);
-      return 0;
-    }
   }
 
-  // Leitura dos dados do corpo da imagem
-  if (strcmp(img->tipo, "P2") == 0) 
+  // ascolhe a leitura com base no tipo
+  if (strcmp(img->tipo, "P5") == 0) 
   {
-    // texto: lê valores decimais separados por espaços
+    // leitura Binária (P5) lê a linha inteira de uma vez em bytes
+    for (int i = 0; i < img->altura; i++) 
+    {
+      fread(img->pixels[i], sizeof(unsigned char), img->largura, f);
+    }
+  } 
+  else if (strcmp(img->tipo, "P2") == 0) 
+  {
+    // leitura em Texto (P2)
     for (int i = 0; i < img->altura; i++) 
     {
       for (int j = 0; j < img->largura; j++) 
       {
-        int pixel_val;
-        if (fscanf(f, "%d", &pixel_val) != 1) 
-        {
-          fprintf(stderr, "Erro: Fim inesperado do arquivo P2.\n");
-          pgm_liberar(img);
-          fclose(f);
-          return 0;
-        }
-        img->pixels[i][j] = (unsigned char)pixel_val;
+        int valor_pixel;
+        fscanf(f, "%d", &valor_pixel);
+        img->pixels[i][j] = (unsigned char)valor_pixel;
       }
     }
   } 
   else 
   {
-    // binário: fecha o arquivo em modo texto e reabre em binário se necessário, ou lê diretamente os bytes do buffer se a posição estiver alinhada.
+    fprintf(stderr, "Formato PGM nao suportado: %s\n", img->tipo);
     fclose(f);
-    // abre novamente em modo binário para ler o bloco de pixels corretamente
-    // FILE *fb = fopen(caminho_arquivo, "rb");
+    return 0;
   }
 
   fclose(f);
