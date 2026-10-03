@@ -4,6 +4,8 @@
 #include "pgm.h"
 #include "argumentos.h"
 
+int criar_arquivo_saida(const char *caminho_saida);
+
 // grava as características (histograma) da imagem processada no arquivo de saída (-o)
 int gravar_caracteristicas(const char *caminho_saida, const char *nome_imagem, const PGMImage *img, int vizinhos, const unsigned int *histograma);
 

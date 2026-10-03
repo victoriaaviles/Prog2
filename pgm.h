@@ -8,11 +8,13 @@ typedef struct
   int largura;       // número de col
   int altura;        // número de lin
   int maxval;        // maior valor de intensidade de pixel
-  unsigned char **pixels; // matriz para armazenar os pixels da imagem
+  uint16_t **pixels; // matriz para armazenar os pixels da imagem
 } PGMImage;
 
-int pgm_ler(const char *caminho_arquivo, PGMImage *img);     // função de leitura do arquivo pgm
+// lê um arquivo pgm (P2 ou P5) para 'img'.
+// Retorna 1 em sucesso e 0 em erro (nesse caso nada fica alocado).
+int pgm_ler(const char *caminho_arquivo, PGMImage *img);     
 
-void pgm_liberar(PGMImage *img);     // função para liberar a memória alocada da matriz de pixels
-
+// libera a matriz de pixels de 'img' (seguro chamar com pixels == NULL).
+void pgm_liberar(PGMImage *img);     
 #endif

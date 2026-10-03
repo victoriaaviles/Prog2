@@ -1,0 +1,109 @@
+LEIAME - CI1002 Programacao 2 - Trabalho LBP (Local Binary Pattern)
+
+1. AUTORIA
+
+Nome: Maria Victoria Aviles
+RA: GRR20250429
+
+----------------------------------
+2. ARQUIVOS E DIRETORIOS DO PACOTE
+
+login/                 diretorio principal
+login/LEIAME           este documento
+login/bin/             contem o executavel lbp apos "make tudo"
+login/src/             Makefile e todos os fontes em C:
+  Makefile             regras tudo, limpa e faxina
+  main.c               funcao principal; apenas coordena o fluxo
+  argumentos.c/.h      leitura e validacao de argc/argv (-d -n -o -i -h)
+  diretorio.c/.h       localiza e processa os arquivos .pgm do diretorio
+  pgm.c/.h             leitura de imagens PGM (P2 e P5) e liberacao de memoria
+  lbp.c/.h             calculo do LBP(8,1) e LBP(16,2) e dos histogramas
+  saida.c/.h           gravacao do arquivo de caracteristicas e das imagens LBP
+
+3. COMO COMPILAR E EXECUTAR
+
+Compilacao (dentro de login/src/):
+  make tudo     compila cada modulo, gera o executavel lbp e o copia
+                para login/bin/
+  make limpa    remove os arquivos objeto (*.o)
+  make faxina   remove os objetos, o executavel e a copia em login/bin/
+
+Execucao (a partir do diretorio login/):
+  ./bin/lbp -d <diretorio> -n <8|16> -o <arquivo_saida> [-i <dir_imagens>] [-h]
+
+  -d  diretorio com as imagens PGM
+  -n  numero de vizinhos do LBP (8 ou 16)
+  -o  arquivo de texto com as caracteristicas (uma linha por imagem)
+  -i  diretorio onde serao salvas as imagens LBP (opcional)
+  -h  mostra a ajuda
+
+Exemplos:
+  mkdir -p lbp_images_8 lbp_images_16
+  ./bin/lbp -d ./dataset -n 8  -o resultado_8.txt  -i ./lbp_images_8
+  ./bin/lbp -d ./dataset -n 16 -o resultado_16.txt -i ./lbp_images_16
+
+IMPORTANTE: o diretorio informado em -i deve existir antes da execucao; o
+programa nao o cria. Caso contrario, as imagens LBP nao serao salvas e uma
+mensagem de erro sera exibida para cada imagem.
+
+Nota sobre a visualização das imagens geradas: 
+Como as imagens LBP são guardadas no formato binário(P5), os editores de texto (como o VS Code) 
+costumam bloquear a abertura direta exibindo um aviso de ficheiro binário. 
+
+Para inspecionar e visualizar corretamente as imagens geradas, a forma mais 
+prática é abri-las diretamente pelo terminal usando o visualizador nativo com o comando:
+  open ./nomedapasta/nomedaimagem (substituindo pelo caminho da pasta e da imagem desejadas).
+
+4. ALGORITMOS, ESTRUTURAS DE DADOS E ESCOLHAS
+
+Algoritmos:
+- LBP(8,1): cada um dos 8 vizinhos Pi (P0..P7, da esquerda para a direita e de
+  cima para baixo) vale 1 se Pi >= pixel central, senao 0. O codigo e a soma de
+  bi * 2^i (P0 e o bit 0), resultando em valores de 0 a 255.
+- LBP(16,2): mesma regra, com os 16 vizinhos da borda de uma janela 5x5, usando
+  exatamente os deslocamentos dx/dy do enunciado; codigos de 0 a 65535.
+- Pixels de borda (1 pixel no LBP8, 2 no LBP16) nao tem todos os vizinhos e
+  recebem o valor zero na imagem LBP; nao entram no histograma.
+- Histograma: 256 posicoes (LBP8) ou 65536 (LBP16), alocado dinamicamente.
+- Na imagem LBP do LBP(16,2) os valores sao divididos por 257 apenas para
+  visualizacao (faixa 0-255); o histograma usa os codigos originais.
+- A funcao de calculo e escolhida por ponteiro para funcao (LBPFunction), que
+  aponta para lbp8_pixel ou lbp16_pixel conforme a opcao -n.
+
+Estruturas de dados:
+- PGMImage: tipo, largura, altura, maxval e a matriz de pixels (uint16_t **),
+  alocada dinamicamente. Usa-se uint16_t porque o MAXVAL pode chegar a 65535.
+- Argumentos: diretorio, saida, vizinhos e diretorio de imagens (ponteiros para
+  as strings do proprio argv; nada e alocado).
+
+Leitura de PGM (pgm_ler): le o numero magico, ignora comentarios (#) no
+cabecalho, valida largura, altura e MAXVAL antes de alocar, e le o corpo conforme
+o tipo. No P5 usa 1 byte por pixel (MAXVAL < 256) ou 2 bytes, byte mais
+significativo primeiro. No P2 le numeros decimais separados por espaco. Valores
+fora de [0, MAXVAL] e arquivos truncados sao tratados como erro.
+
+Gerenciamento de memoria: todo caminho de erro libera o que ja foi alocado
+(pgm_liberar). O histograma e alocado uma unica vez e reaproveitado para todas
+as imagens. Verificado com a ferramenta leaks.
+
+Alternativas e dificuldades:
+- (ESCREVA AQUI SO O QUE REALMENTE ACONTECEU. Sugestoes: a leitura inicial
+  tratava tudo como P2 e as imagens do dataset eram P5; a ordem dos bits do
+  codigo LBP; comentarios no cabecalho do PGM; MAXVAL maior que 255; vazamentos
+  de memoria em caminhos de erro, encontrados com leaks.)
+
+5. BUGS E LIMITACOES CONHECIDAS
+
+- O diretorio do -i nao e criado pelo programa; deve existir.
+- Apenas arquivos com extensao ".pgm" (minusculas) sao processados.
+- Caminhos de arquivo maiores que 511 caracteres sao truncados.
+- Comentarios (#) sao aceitos apenas no cabecalho do PGM.
+- A ordem das linhas no arquivo de saida segue a ordem de leitura do diretorio
+  pelo sistema operacional, que pode nao ser alfabetica.
+- Nos testes realizados nao foi observado Segmentation fault.
+
+6. OUTRAS INFORMACOES
+
+- Compilado sem warnings com: gcc -Wall -Wextra -Wpedantic -std=c11
+- O arquivo de saida (-o) e recriado a cada execucao: contem uma linha por
+  imagem processada, no formato: nome largura altura vizinhos h[0] ... h[N-1]
