@@ -19,7 +19,7 @@ O trabalho está organizado da seguinte forma:
   - lbp.c / lbp.h: Implementação do cálculo LBP (8,1 e 16,2) e geração dos histogramas.
   - saida.c / saida.h: Gravação do ficheiro de características textuais e das imagens LBP opcionais.
   - Makefile: Regras de compilação modular e automatizada.
-- bin/: Diretório de destino onde o executável é instalado após a compilação[cite: 10, 11].
+- bin/: Diretório de destino onde o executável é instalado após a compilação.
 ----------------------------------
 
 3. COMO COMPILAR O CÓDIGO-FONTE
@@ -47,8 +47,10 @@ Para executar o programa após compilado, utilize por exemplo:
 ----------------------------------
 
 5. BUGS CONHECIDOS
+
 Não foram identificados bugs ou falhas de segmentação (*Segmentation fault*) nos testes padrão realizados. O programa faz a validação rigorosa de argumentos inválidos e diretórios inexistentes.
 
 ---------------------
 6. OUTRAS INFORMAÇÕES
+
 O projeto cumpre integralmente os requisitos de modularização em C, boas práticas com warnings rigorosos ativados (`-Wall -Wextra -Wpedantic -std=c11`) e tratamento adequado de erros.
