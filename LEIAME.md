@@ -10,16 +10,14 @@ Disciplina: CI1002 Programação 2 - 2026/2
 2. LISTA DE FICHEIROS E DIRETÓRIOS
 O trabalho está organizado da seguinte forma:
 
-- LEIAME: Este documento descritivo do trabalho
-- src/: Diretório contendo o código principal em linguagem C e o Makefile.
-  - main.c: Módulo principal que coordena o fluxo de execução.
-  - argumentos.c / argumentos.h: Tratamento, validação e armazenamento dos argumentos de linha de comando (argc/argv).
-  - diretorio.c / diretorio.h: Gestão e localização de ficheiros PGM no diretório especificado.
-  - pgm.c / pgm.h: Leitura, alocação dinâmica e gestão de memória para imagens PGM (suporte a P2 e P5).
-  - lbp.c / lbp.h: Implementação do cálculo LBP (8,1 e 16,2) e geração dos histogramas.
-  - saida.c / saida.h: Gravação do ficheiro de características textuais e das imagens LBP opcionais.
-  - Makefile: Regras de compilação modular e automatizada.
-- bin/: Diretório de destino onde o executável é instalado após a compilação.
+- LEIAME: Este documento descritivo do software.
+- Makefile: Regras de compilação modular e automatizada.
+- main.c: Módulo principal que coordena o fluxo de execução.
+- argumentos.c / argumentos.h: Tratamento, validação e armazenamento dos argumentos de linha de comando (argc/argv).
+- diretorio.c / diretorio.h: Gestão e localização de ficheiros PGM no diretório especificado.
+- pgm.c / pgm.h: Leitura, alocação dinâmica e gestão de memória para imagens PGM (suporte a P2 e P5).
+- lbp.c / lbp.h: Implementação do cálculo LBP (8,1 e 16,2) e geração dos histogramas.
+- saida.c / saida.h: Gravação do ficheiro de características textuais e das imagens LBP opcionais.
 ----------------------------------
 
 3. COMO COMPILAR O CÓDIGO-FONTE
@@ -28,6 +26,9 @@ Para compilar o projeto de forma limpa e correta, utilize o Makefile localizado 
 - make tudo: Compila todos os módulos individualmente, gera o programa executável e instala-o no diretório bin/
 - make limpa: Remove os ficheiros temporários de objeto (*.o) gerados durante a compilação.
 - make faxina: Remove todos os ficheiros temporários, objetos e executáveis, limpando totalmente o ambiente de trabalho.
+
+*Aviso importante sobre as pastas de saída:* Antes de executar a geração opcional de imagens, certifique-se de criar previamente os diretórios correspondentes para evitar erros de salvamento (`lbp_images_8` para o teste de 8 vizinhos e `lbp_images_16` para o de 16 vizinhos):
+`mkdir -p lbp_images_8 lbp_images_16`
 
 Para executar o programa após compilado, utilize por exemplo:
 
